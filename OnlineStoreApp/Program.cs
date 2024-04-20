@@ -28,6 +28,7 @@ namespace OnlineStoreApp
 
             builder.Services.Configure<KeyValuesConfiguration>(options => builder.Configuration.GetSection("KeyValuesConfiguration").Bind(options));
             builder.Services.Configure<JwtSettings>(options => builder.Configuration.GetSection("JwtSettings").Bind(options));
+            builder.Services.Configure<EmailProvider>(options => builder.Configuration.GetSection("EmailProviderSettings").Bind(options));
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer("name=DefaultConnection"));
@@ -93,7 +94,6 @@ namespace OnlineStoreApp
                 });
             });
 
-
             builder.Services.AddTransient<IManageCategoryUseCase, ManageCategoryUseCase>();
             builder.Services.AddTransient<IManageFoodUseCase, ManageFoodUseCase>();
             builder.Services.AddTransient<IMakeOrderUseCase, MakeOrderUseCase>();
@@ -114,15 +114,12 @@ namespace OnlineStoreApp
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
-            app.UseSwagger();
-            app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
             app.UseRouting();
-
-
 
             app.UseAuthentication();
             app.UseAuthorization();

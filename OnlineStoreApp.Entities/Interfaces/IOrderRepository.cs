@@ -7,5 +7,7 @@ namespace OnlineStoreApp.Entities.Interfaces
         Task InsertOrderAsync(Order order);
         Task InsertOrderDetailAsync(OrderDetail orderDetail);
         Task<List<Order>> GetAllAsync();
+        Task<Order> GetAsync(int orderId);
+        Order Get(int orderId);
     }
 }

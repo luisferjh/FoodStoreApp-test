@@ -22,6 +22,56 @@ namespace OnlineStoreApp.UseCases.UseCases
             _senderEmail = senderEmail;
         }
 
+        public async Task<OrderResponseDTO> GetAsync(int orderId)
+        {
+            var order = await _unitOfWork.OrderRepository.GetAsync(orderId);
+
+            return new OrderResponseDTO
+            {
+                Orden = new OrderDto
+                {
+                    Id = order.Id,
+                    Date = order.Date,
+                    Status = order.Status,
+                    Total = order.Total,
+                    UserId = order.UserId
+                },
+                orderDetailDtos = order.OrderDetails.Select(w => new OrderDetailDto
+                {
+                    Id = w.Id,
+                    Food = w.Food.Name,
+                    FoodId = w.FoodId,
+                    Quantity = w.Quantity,
+                    SubTotal = w.SubTotal
+                }).ToList()
+            };
+        }
+
+        public OrderResponseDTO Get(int orderId)
+        {
+            var order = _unitOfWork.OrderRepository.Get(orderId);
+
+            return new OrderResponseDTO
+            {
+                Orden = new OrderDto
+                {
+                    Id = order.Id,
+                    Date = order.Date,
+                    Status = order.Status,
+                    Total = order.Total,
+                    UserId = order.UserId
+                },
+                orderDetailDtos = order.OrderDetails.Select(w => new OrderDetailDto
+                {
+                    Id = w.Id,
+                    Food = w.Food.Name,
+                    FoodId = w.FoodId,
+                    Quantity = w.Quantity,
+                    SubTotal = w.SubTotal
+                }).ToList()
+            };
+        }
+
         public async Task<List<OrderResponseDTO>> GetAllAsync()
         {
             var orders = await _unitOfWork.OrderRepository.GetAllAsync();
@@ -65,7 +115,7 @@ namespace OnlineStoreApp.UseCases.UseCases
                 {
                     var food = await _unitOfWork.FoodRepository.GetAsync(orderDetailDto.FoodId);
                     if (food.QuantityAvailable <= 0 ||
-                        orderDetailDto.Quantity >= food.QuantityAvailable)
+                        orderDetailDto.Quantity > food.QuantityAvailable)
                     {
                         return new ResultService
                         {
@@ -91,12 +141,12 @@ namespace OnlineStoreApp.UseCases.UseCases
 
                 if (result)
                 {
+                    var orderDetails = await GetAsync(order.Id);
                     Thread thread = new Thread(() =>
                     {
-                        _senderEmail.SendEmail(user.Email, user.Name);
+                        _senderEmail.SendEmail(user.Email, user.Name, orderDetails);
                     });
                     thread.Start();
-                    //Task.Run(() => _senderEmail.SendEmail(user.Email, user.Name)).Start();
 
                     return new ResultService
                     {

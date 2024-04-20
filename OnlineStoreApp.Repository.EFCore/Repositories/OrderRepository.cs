@@ -31,5 +31,23 @@ namespace OnlineStoreApp.Repository.EFCore.Repositories
                 .ThenInclude(f => f.Food)
                 .ToListAsync();
         }
+
+        public async Task<Order> GetAsync(int orderId)
+        {
+            return await _dbContext.Orders
+               .Where(f => f.Id == orderId)
+               .Include(f => f.OrderDetails)
+               .ThenInclude(f => f.Food)
+               .FirstOrDefaultAsync();
+        }
+
+        public Order Get(int orderId)
+        {
+            return _dbContext.Orders
+                .Where(f => f.Id == orderId)
+                .Include(f => f.OrderDetails)
+                .ThenInclude(f => f.Food)
+                .FirstOrDefault();
+        }
     }
 }

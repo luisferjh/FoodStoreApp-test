@@ -19,6 +19,11 @@ namespace OnlineStoreApp.Repository.EFCore.Repositories
             _dbContext.Users.Add(model);
         }
 
+        public async Task AddUserClaimsAsync(List<UserClaims> models)
+        {
+            _dbContext.UserClaims.AddRangeAsync(models);
+        }
+
         public void Deactivate(User user)
         {
             user.State = 0;

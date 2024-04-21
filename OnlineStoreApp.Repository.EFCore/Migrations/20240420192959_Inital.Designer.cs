@@ -12,8 +12,8 @@ using OnlineStoreApp.Repository.EFCore.DataContext;
 namespace OnlineStoreApp.Repository.EFCore.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240418181142_Initial")]
-    partial class Initial
+    [Migration("20240420192959_Inital")]
+    partial class Inital
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

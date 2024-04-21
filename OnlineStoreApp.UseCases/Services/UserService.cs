@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using OnlineStore.DTOs;
 using OnlineStoreApp.Entities.Interfaces;
 using OnlineStoreApp.Entities.POCOs;
+using OnlineStoreApp.UseCases.Enums;
 using OnlineStoreApp.UseCases.Helpers;
 using OnlineStoreApp.UseCases.Interfaces;
 using System.Security.Claims;
@@ -80,20 +81,39 @@ namespace OnlineStoreApp.UseCases.Services
                 {
                     Name = model.Name,
                     Email = model.Email,
-                    State = 1,
+                    State = (int)RecordState.Active,
                     Password = model.Password,
                     CreatedDate = DateTime.Now
                 };
 
                 await _unitOfWork.UserRepository.AddAsync(user);
+
                 var result = await _unitOfWork.SaveAsync();
+                List<UserClaims> claimsRoles = new List<UserClaims>
+                {
+                    new UserClaims
+                    {
+                        UserId = user.Id,
+                        ClaimType = "isUser",
+                        ClaimValue = "1"
+                    },
+                    new UserClaims
+                    {
+                        UserId = user.Id,
+                        ClaimType = "logUser",
+                        ClaimValue = "isUser"
+                    },
+                };
+                await _unitOfWork.UserRepository.AddUserClaimsAsync(claimsRoles);
+
+                await _unitOfWork.SaveAsync();
 
                 if (result)
                     return new ResultService
                     {
                         Message = "User registered successfully",
                         IsSuccess = true,
-                        Data = user,
+                        Data = null,
                     };
                 else
                     return new ResultService

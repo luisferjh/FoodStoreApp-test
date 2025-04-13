@@ -7,16 +7,17 @@ namespace OnlineStoreApp.UseCases.UseCases
 {
     public class ManageCategoryUseCase : IManageCategoryUseCase
     {
-        private readonly IUnitOfWorkRepository _unitOfWork;
+        private readonly IUnitOfWorkAdapter _unitOfWorkAdapter;
 
-        public ManageCategoryUseCase(IUnitOfWorkRepository unitOfWork)
+        public ManageCategoryUseCase(IUnitOfWorkAdapter unitOfWorkAdapter)
         {
-            _unitOfWork = unitOfWork;
+            _unitOfWorkAdapter = unitOfWorkAdapter;
         }
 
         public async Task<CategoryDTO> GetCategoryAsync(int categoryId)
         {
-            var category = await _unitOfWork.CategoryRepository.GetAsync(categoryId);
+            var _unitOfWork = _unitOfWorkAdapter.Create();
+            var category = await _unitOfWork.UnitOfWorkRepositories.CategoryRepository.GetAsync(categoryId);
 
             if (category is null)
                 return null;
@@ -29,7 +30,8 @@ namespace OnlineStoreApp.UseCases.UseCases
 
         public async Task<List<CategoryDTO>> GetAllCategoriesAsync()
         {
-            var categories = await _unitOfWork.CategoryRepository.GetAllAsync();
+            var _unitOfWork = _unitOfWorkAdapter.Create();
+            var categories = await _unitOfWork.UnitOfWorkRepositories.CategoryRepository.GetAllAsync();
 
             if (categories.Count() <= 0)
                 return new List<CategoryDTO>();
@@ -39,7 +41,8 @@ namespace OnlineStoreApp.UseCases.UseCases
 
         public async Task<bool> AddCategoryAync(CategoryDTO categoryDTO)
         {
-            await _unitOfWork.CategoryRepository.CreateCategoryAsync(new Category
+            var _unitOfWork = _unitOfWorkAdapter.Create();
+            await _unitOfWork.UnitOfWorkRepositories.CategoryRepository.CreateCategoryAsync(new Category
             {
                 Name = categoryDTO.Name,
             });
@@ -49,19 +52,21 @@ namespace OnlineStoreApp.UseCases.UseCases
 
         public async Task<bool> EditCategoryAsync(int categoryId, CategoryDTO categoryDTO)
         {
-            var category = await _unitOfWork.CategoryRepository.GetAsync(categoryId);
+            var _unitOfWork = _unitOfWorkAdapter.Create();
+            var category = await _unitOfWork.UnitOfWorkRepositories.CategoryRepository.GetAsync(categoryId);
             if (category is null)
             {
                 return false;
             }
             category.Name = categoryDTO.Name;
-            _unitOfWork.CategoryRepository.UpdateCategory(category);
+            _unitOfWork.UnitOfWorkRepositories.CategoryRepository.UpdateCategory(category);
             return await _unitOfWork.SaveAsync();
         }
 
         public async Task<bool> RemoveCategoryAsync(int categoryId)
         {
-            await _unitOfWork.CategoryRepository.DeleteCategoryAsync(categoryId);
+            var _unitOfWork = _unitOfWorkAdapter.Create();
+            await _unitOfWork.UnitOfWorkRepositories.CategoryRepository.DeleteCategoryAsync(categoryId);
             return await _unitOfWork.SaveAsync();
         }
 

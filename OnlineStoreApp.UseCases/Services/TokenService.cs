@@ -6,22 +6,24 @@ namespace OnlineStoreApp.UseCases.Services
 {
     public class TokenService : ITokenService
     {
-        private readonly IUnitOfWorkRepository _unitOfWork;
+        private readonly IUnitOfWorkAdapter _unitOfWorkAdapter;
 
         public TokenService(
-            IUnitOfWorkRepository unitOfWork)
+            IUnitOfWorkAdapter unitOfWorkAdapter)
         {
-            _unitOfWork = unitOfWork;
+            _unitOfWorkAdapter = unitOfWorkAdapter;
         }
 
         public async Task<JwtToken> GenerateToken(User user)
         {
-            return await _unitOfWork.tokenRepository.GenerateToken(user);
+            var _unitOfWork = _unitOfWorkAdapter.Create();
+            return await _unitOfWork.UnitOfWorkRepositories.TokenRepository.GenerateToken(user);
         }
 
         public async Task<List<UserClaims>> GetClaimsFromDB(int idUser)
         {
-            return await _unitOfWork.tokenRepository.GetClaimsFromDB(idUser);
+            var _unitOfWork = _unitOfWorkAdapter.Create();
+            return await _unitOfWork.UnitOfWorkRepositories.TokenRepository.GetClaimsFromDB(idUser);
         }
     }
 }

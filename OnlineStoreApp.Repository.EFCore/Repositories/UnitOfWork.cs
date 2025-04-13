@@ -4,38 +4,20 @@ using OnlineStoreApp.Repository.EFCore.DataContext;
 
 namespace OnlineStoreApp.Repository.EFCore.Repositories
 {
-    public class UnitOfWorkRepository : IUnitOfWorkRepository
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly IFoodRepository _foodRepository;
-        private readonly IOrderRepository _orderRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly ITokenRepository _tokenRepository;
+        IUnitOfWorkRepositories _unitOfWorkRepositories;
 
-        public UnitOfWorkRepository(
+        public UnitOfWork(
             ApplicationDbContext applicationDbContext,
-            ICategoryRepository categoryRepository,
-            IFoodRepository foodRepository,
-            IOrderRepository orderRepository,
-            IUserRepository userRepository,
-            ITokenRepository tokenRepository)
+            IUnitOfWorkRepositories unitOfWorkRepositories)
         {
             _dbContext = applicationDbContext;
-            _categoryRepository = categoryRepository;
-            _foodRepository = foodRepository;
-            _orderRepository = orderRepository;
-            _userRepository = userRepository;
-            _tokenRepository = tokenRepository;
+            _unitOfWorkRepositories = unitOfWorkRepositories;
         }
 
-        public ICategoryRepository CategoryRepository { get => _categoryRepository; }
-        public IFoodRepository FoodRepository { get => _foodRepository; }
-        public IOrderRepository OrderRepository { get => _orderRepository; }
-
-        public IUserRepository UserRepository { get => _userRepository; }
-
-        public ITokenRepository tokenRepository { get => _tokenRepository; }
+        public IUnitOfWorkRepositories UnitOfWorkRepositories { get => _unitOfWorkRepositories; }
 
         public async Task<bool> SaveAsync()
         {

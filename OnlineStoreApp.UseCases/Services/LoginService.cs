@@ -9,15 +9,15 @@ namespace OnlineStoreApp.UseCases.Services
 {
     public class LoginService : ILoginService
     {
-        private readonly IUnitOfWorkRepository _unitOfWork;
+        private readonly IUnitOfWorkAdapter _unitOfWorkAdapter;
         private readonly ITokenService _tokenService;
 
         public LoginService(
-            IUnitOfWorkRepository unitOfWork,
+            IUnitOfWorkAdapter unitOfWorkAdapter,
             ITokenService tokenService,
             IOptions<KeyValuesConfiguration> keyValuesConfiguration)
         {
-            _unitOfWork = unitOfWork;
+            _unitOfWorkAdapter = unitOfWorkAdapter;
             _tokenService = tokenService;
             SecurityTools._keyValuesConfiguration = keyValuesConfiguration.Value;
         }
@@ -39,7 +39,8 @@ namespace OnlineStoreApp.UseCases.Services
 
         public async Task<(User, AuthenticationResultDTO)> AuthenticateAsync(LoginDTO loginDTO)
         {
-            User user = await _unitOfWork.UserRepository.Get(loginDTO.Email);
+            var _unitOfWork = _unitOfWorkAdapter.Create();
+            User user = await _unitOfWork.UnitOfWorkRepositories.UserRepository.Get(loginDTO.Email);
             AuthenticationResultDTO result = new AuthenticationResultDTO();
             if (user == null)
             {

@@ -7,16 +7,17 @@ namespace OnlineStoreApp.UseCases.UseCases
 {
     public class ManageFoodUseCase : IManageFoodUseCase
     {
-        private readonly IUnitOfWorkRepository _unitOfWork;
+        private readonly IUnitOfWorkAdapter _unitOfWorkAdapter;
 
-        public ManageFoodUseCase(IUnitOfWorkRepository unitOfWork)
+        public ManageFoodUseCase(IUnitOfWorkAdapter unitOfWorkAdapter)
         {
-            _unitOfWork = unitOfWork;
+            _unitOfWorkAdapter = unitOfWorkAdapter;
         }
 
         public async Task<List<FoodDTO>> GetAllFoodsInCatalogAsync()
         {
-            var foods = await _unitOfWork.FoodRepository.GetAllAsync();
+            var _unitOfWork = _unitOfWorkAdapter.Create();
+            var foods = await _unitOfWork.UnitOfWorkRepositories.FoodRepository.GetAllAsync();
 
             if (foods.Count() <= 0)
                 return new List<FoodDTO>();
@@ -33,7 +34,8 @@ namespace OnlineStoreApp.UseCases.UseCases
 
         public async Task<FoodDTO> GetFoodInCatalogAsync(int idfood)
         {
-            var food = await _unitOfWork.FoodRepository.GetAsync(idfood);
+            var _unitOfWork = _unitOfWorkAdapter.Create();
+            var food = await _unitOfWork.UnitOfWorkRepositories.FoodRepository.GetAsync(idfood);
 
             if (food is null)
                 return null;
@@ -55,7 +57,8 @@ namespace OnlineStoreApp.UseCases.UseCases
 
         public async Task<bool> AddFoodToCatalogAsync(CreateFoodDTO foodDTO)
         {
-            await _unitOfWork.FoodRepository.CreateFoodAsync(new Food
+            var _unitOfWork = _unitOfWorkAdapter.Create();
+            await _unitOfWork.UnitOfWorkRepositories.FoodRepository.CreateFoodAsync(new Food
             {
                 Name = foodDTO.Name,
                 CategoryId = foodDTO.CategoryId,
@@ -69,7 +72,8 @@ namespace OnlineStoreApp.UseCases.UseCases
 
         public async Task<bool> EditFoodInCatalogAsync(int foodId, CreateFoodDTO foodDTO)
         {
-            var food = await _unitOfWork.FoodRepository.GetAsync(foodId);
+            var _unitOfWork = _unitOfWorkAdapter.Create();
+            var food = await _unitOfWork.UnitOfWorkRepositories.FoodRepository.GetAsync(foodId);
 
             if (food is null)
                 return false;
@@ -80,14 +84,15 @@ namespace OnlineStoreApp.UseCases.UseCases
             food.Price = foodDTO.Price;
             food.QuantityAvailable = foodDTO.QuantityAvailable;
 
-            _unitOfWork.FoodRepository.UpdateFood(food);
+            _unitOfWork.UnitOfWorkRepositories.FoodRepository.UpdateFood(food);
 
             return await _unitOfWork.SaveAsync();
         }
 
         public async Task<bool> RemoveFoodFromCatalogAsync(int foodId)
         {
-            await _unitOfWork.FoodRepository.DeleteFoodAsync(foodId);
+            var _unitOfWork = _unitOfWorkAdapter.Create();
+            await _unitOfWork.UnitOfWorkRepositories.FoodRepository.DeleteFoodAsync(foodId);
             return await _unitOfWork.SaveAsync();
         }
     }

@@ -1,12 +1,8 @@
 ﻿namespace OnlineStoreApp.Entities.Interfaces
 {
-    public interface IUnitOfWorkRepository
+    public interface IUnitOfWork
     {
-        ICategoryRepository CategoryRepository { get; }
-        IFoodRepository FoodRepository { get; }
-        IOrderRepository OrderRepository { get; }
-        IUserRepository UserRepository { get; }
-        ITokenRepository tokenRepository { get; }
+        IUnitOfWorkRepositories UnitOfWorkRepositories { get; }
 
         Task<bool> SaveAsync();
         bool Save();

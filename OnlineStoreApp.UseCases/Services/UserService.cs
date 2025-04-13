@@ -12,22 +12,23 @@ namespace OnlineStoreApp.UseCases.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUnitOfWorkRepository _unitOfWork;
+        private readonly IUnitOfWorkAdapter _unitOfWorkAdapter;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public UserService(
-            IUnitOfWorkRepository unitOfWork,
+            IUnitOfWorkAdapter unitOfWorkAdapter,
             IOptions<KeyValuesConfiguration> keyValuesConfiguration,
             IHttpContextAccessor httpContextAccessor)
         {
-            _unitOfWork = unitOfWork;
+            _unitOfWorkAdapter = unitOfWorkAdapter;
             _httpContextAccessor = httpContextAccessor;
             SecurityTools._keyValuesConfiguration = keyValuesConfiguration.Value;
         }
 
         public async Task<IEnumerable<UserDto>> GetAllAsync()
         {
-            var users = await _unitOfWork.UserRepository.GetAllAsync();
+            var _unitOfWork = _unitOfWorkAdapter.Create();
+            var users = await _unitOfWork.UnitOfWorkRepositories.UserRepository.GetAllAsync();
             var userDtos = users.Select(s => new UserDto
             {
                 Id = s.Id,
@@ -40,7 +41,8 @@ namespace OnlineStoreApp.UseCases.Services
 
         public async Task<UserDto> GetAsync(int id)
         {
-            var user = await _unitOfWork.UserRepository.GetAsync(id);
+            var _unitOfWork = _unitOfWorkAdapter.Create();
+            var user = await _unitOfWork.UnitOfWorkRepositories.UserRepository.GetAsync(id);
             var userDto = new UserDto
             {
                 Id = user.Id,
@@ -53,7 +55,8 @@ namespace OnlineStoreApp.UseCases.Services
 
         public async Task<UserDto> GetAsync(string email)
         {
-            var user = await _unitOfWork.UserRepository.Get(email);
+            var _unitOfWork = _unitOfWorkAdapter.Create();
+            var user = await _unitOfWork.UnitOfWorkRepositories.UserRepository.Get(email);
             var userDto = new UserDto
             {
                 Id = user.Id,
@@ -73,6 +76,7 @@ namespace OnlineStoreApp.UseCases.Services
 
         public async Task<ResultService> InsertAsync(UserCreateDTO model)
         {
+            var _unitOfWork = _unitOfWorkAdapter.Create();
             try
             {
                 model.Password = SecurityTools.EncryptPlainText(model.Password);
@@ -86,7 +90,7 @@ namespace OnlineStoreApp.UseCases.Services
                     CreatedDate = DateTime.Now
                 };
 
-                await _unitOfWork.UserRepository.AddAsync(user);
+                await _unitOfWork.UnitOfWorkRepositories.UserRepository.AddAsync(user);
 
                 var result = await _unitOfWork.SaveAsync();
                 List<UserClaims> claimsRoles = new List<UserClaims>
@@ -104,7 +108,7 @@ namespace OnlineStoreApp.UseCases.Services
                         ClaimValue = "isUser"
                     },
                 };
-                await _unitOfWork.UserRepository.AddUserClaimsAsync(claimsRoles);
+                await _unitOfWork.UnitOfWorkRepositories.UserRepository.AddUserClaimsAsync(claimsRoles);
 
                 await _unitOfWork.SaveAsync();
 

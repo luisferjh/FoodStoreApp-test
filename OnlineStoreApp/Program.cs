@@ -2,13 +2,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using OnlineStoreApp.Entities.Interfaces;
 using OnlineStoreApp.Repository.EFCore.DataContext;
-using OnlineStoreApp.Repository.EFCore.Repositories;
+using OnlineStoreApp.Repository.EFCore.Extensions;
+using OnlineStoreApp.UseCases.Extensions;
 using OnlineStoreApp.UseCases.Helpers;
-using OnlineStoreApp.UseCases.Interfaces;
-using OnlineStoreApp.UseCases.Services;
-using OnlineStoreApp.UseCases.UseCases;
 using System.Text;
 
 namespace OnlineStoreApp
@@ -30,18 +27,19 @@ namespace OnlineStoreApp
             builder.Services.Configure<JwtSettings>(options => builder.Configuration.GetSection("JwtSettings").Bind(options));
             builder.Services.Configure<EmailProvider>(options => builder.Configuration.GetSection("EmailProviderSettings").Bind(options));
 
-            //builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            //    options.UseSqlServer("name=DefaultConnection"));
-            var optionBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            var dbOptions = optionBuilder
-                .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("OnlineStoreApp.Repository.EFCore")).Options;
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer("name=DefaultConnection"));
 
-            var dbContext = new ApplicationDbContext(dbOptions);
-            var pendingMigration = dbContext.Database.GetPendingMigrations() as IList<string> ?? dbContext.Database.GetPendingMigrations().ToList();
-            if (pendingMigration.Any())
-            {
-                dbContext.Database.Migrate();
-            }
+            //var optionBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            //var dbOptions = optionBuilder
+            //    .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("OnlineStoreApp.Repository.EFCore")).Options;
+
+            //var dbContext = new ApplicationDbContext(dbOptions);
+            //var pendingMigration = dbContext.Database.GetPendingMigrations() as IList<string> ?? dbContext.Database.GetPendingMigrations().ToList();
+            //if (pendingMigration.Any())
+            //{
+            //    dbContext.Database.Migrate();
+            //}
 
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -73,6 +71,10 @@ namespace OnlineStoreApp
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = tokenValidationParameters;
             });
+
+            builder.Services.AddEFCoreRepositories();
+            builder.Services.AddUseCases();
+
             builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddSwaggerGen(c =>
@@ -103,21 +105,6 @@ namespace OnlineStoreApp
                     }
                 });
             });
-
-            builder.Services.AddTransient<IManageCategoryUseCase, ManageCategoryUseCase>();
-            builder.Services.AddTransient<IManageFoodUseCase, ManageFoodUseCase>();
-            builder.Services.AddTransient<IMakeOrderUseCase, MakeOrderUseCase>();
-            builder.Services.AddTransient<ISenderEmailService, SenderEmailService>();
-            builder.Services.AddTransient<ITokenService, TokenService>();
-            builder.Services.AddTransient<ILoginService, LoginService>();
-            builder.Services.AddTransient<IUserService, UserService>();
-
-            builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
-            builder.Services.AddTransient<IFoodRepository, FoodRepository>();
-            builder.Services.AddTransient<IOrderRepository, OrderRepository>();
-            builder.Services.AddTransient<IUserRepository, UserRepository>();
-            builder.Services.AddTransient<ITokenRepository, TokenRepository>();
-            builder.Services.AddTransient<IUnitOfWorkRepository, UnitOfWorkRepository>();
 
             var app = builder.Build();
 

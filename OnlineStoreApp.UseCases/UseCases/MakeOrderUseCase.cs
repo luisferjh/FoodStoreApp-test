@@ -22,7 +22,7 @@ namespace OnlineStoreApp.UseCases.UseCases
             _senderEmail = senderEmail;
         }
 
-        public async Task<OrderResponseDTO> GetAsync(int orderId)
+        public async Task<OrderResponseDTO> GetAsync(Guid orderId)
         {
             var _unitOfWork = _unitOfWorkAdapter.Create();
             var order = await _unitOfWork.UnitOfWorkRepositories.OrderRepository.GetAsync(orderId);
@@ -48,7 +48,7 @@ namespace OnlineStoreApp.UseCases.UseCases
             };
         }
 
-        public OrderResponseDTO Get(int orderId)
+        public OrderResponseDTO Get(Guid orderId)
         {
             var _unitOfWork = _unitOfWorkAdapter.Create();
             var order = _unitOfWork.UnitOfWorkRepositories.OrderRepository.Get(orderId);
@@ -112,9 +112,10 @@ namespace OnlineStoreApp.UseCases.UseCases
                 order.Total = orderRequest.Order.Total;
                 order.UserId = user.Id;
                 order.Date = DateTime.Now;
+                order.Id = Guid.NewGuid();
 
                 await _unitOfWork.UnitOfWorkRepositories.OrderRepository.InsertOrderAsync(order);
-                await _unitOfWork.SaveAsync();
+                //await _unitOfWork.SaveAsync();
                 foreach (OrderDetailDTO orderDetailDto in orderRequest.OrderDetails)
                 {
                     var food = await _unitOfWork.UnitOfWorkRepositories.FoodRepository.GetAsync(orderDetailDto.FoodId);

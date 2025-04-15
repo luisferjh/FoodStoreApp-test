@@ -4,8 +4,8 @@ namespace OnlineStoreApp.UseCases.Interfaces
 {
     public interface IMakeOrderUseCase
     {
-        Task<OrderResponseDTO> GetAsync(int orderId);
-        OrderResponseDTO Get(int orderId);
+        Task<OrderResponseDTO> GetAsync(Guid orderId);
+        OrderResponseDTO Get(Guid orderId);
         Task<List<OrderResponseDTO>> GetAllAsync();
         Task<ResultService> PlaceOrderAsync(OrderRequestDTO orderRequest);
     }

@@ -19,8 +19,14 @@ namespace OnlineStoreApp.Repository.EFCore.EntitiesConfiguration
 
             builder.Property(x => x.OrderId)
                 .HasColumnName("order_id")
-                .HasColumnType("int")
+                .HasColumnType("uniqueidentifier")
+                .ValueGeneratedNever()
                 .IsRequired();
+
+            //builder.Property(x => x.OrderId)
+            //    .HasColumnName("order_id")
+            //    .HasColumnType("int")
+            //    .IsRequired();
 
             builder.Property(x => x.FoodId)
                 .HasColumnName("food_id")

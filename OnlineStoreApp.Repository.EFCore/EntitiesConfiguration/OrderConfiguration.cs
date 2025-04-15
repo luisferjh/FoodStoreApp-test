@@ -13,9 +13,14 @@ namespace OnlineStoreApp.Repository.EFCore.EntitiesConfiguration
 
             builder.HasKey(o => o.Id);
 
+            //builder.Property(x => x.Id)
+            //   .HasColumnName("id")
+            //   .HasColumnType("int");
+
             builder.Property(x => x.Id)
                .HasColumnName("id")
-               .HasColumnType("int");
+               .HasColumnType("uniqueidentifier")
+               .ValueGeneratedNever();
 
             builder.Property(x => x.UserId)
               .HasColumnName("user_id")

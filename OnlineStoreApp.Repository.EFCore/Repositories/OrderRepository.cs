@@ -32,7 +32,7 @@ namespace OnlineStoreApp.Repository.EFCore.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Order> GetAsync(int orderId)
+        public async Task<Order> GetAsync(Guid orderId)
         {
             return await _dbContext.Orders
                .Where(f => f.Id == orderId)
@@ -41,7 +41,7 @@ namespace OnlineStoreApp.Repository.EFCore.Repositories
                .FirstOrDefaultAsync();
         }
 
-        public Order Get(int orderId)
+        public Order Get(Guid orderId)
         {
             return _dbContext.Orders
                 .Where(f => f.Id == orderId)

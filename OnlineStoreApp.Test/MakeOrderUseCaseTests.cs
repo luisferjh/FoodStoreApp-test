@@ -26,7 +26,7 @@ namespace OnlineStoreApp.Test
         public async Task GetAsync_ShouldReturnOrderResponseDTO()
         {
             // Arrange
-            var orderId = 1;
+            var orderId = Guid.NewGuid();
             var order = new Order
             {
                 Id = orderId,
@@ -56,7 +56,7 @@ namespace OnlineStoreApp.Test
         public void Get_ShouldReturnOrderResponseDTO()
         {
             // Arrange
-            var orderId = 1;
+            var orderId = Guid.NewGuid();
             var order = new Order
             {
                 Id = orderId,
@@ -90,7 +90,7 @@ namespace OnlineStoreApp.Test
             {
                 new Order
                 {
-                    Id = 1,
+                    Id = Guid.NewGuid(),
                     Date = DateTime.Now,
                     Status = "Success",
                     Total = 100,
@@ -132,7 +132,7 @@ namespace OnlineStoreApp.Test
             var food = new Food { Id = 1, Name = "Pizza", QuantityAvailable = 10 };
             var order = new Order
             {
-                Id = 0,
+                Id = Guid.NewGuid(),
                 UserId = 1,
                 Date = DateTime.Now,
                 Total = 21.08m,
@@ -142,7 +142,7 @@ namespace OnlineStoreApp.Test
             var unitOfWorkMock = new Mock<IUnitOfWork>();
             unitOfWorkMock.Setup(u => u.UnitOfWorkRepositories.UserRepository.Get(It.IsAny<string>())).ReturnsAsync(user);
             unitOfWorkMock.Setup(u => u.UnitOfWorkRepositories.FoodRepository.GetAsync(It.IsAny<int>())).ReturnsAsync(food);
-            unitOfWorkMock.Setup(u => u.UnitOfWorkRepositories.OrderRepository.GetAsync(It.IsAny<int>())).ReturnsAsync(order);
+            unitOfWorkMock.Setup(u => u.UnitOfWorkRepositories.OrderRepository.GetAsync(It.IsAny<Guid>())).ReturnsAsync(order);
             unitOfWorkMock.Setup(u => u.UnitOfWorkRepositories.OrderRepository.InsertOrderAsync(It.IsAny<Order>())).Returns(Task.CompletedTask);
             unitOfWorkMock.Setup(u => u.UnitOfWorkRepositories.OrderRepository.InsertOrderDetailAsync(It.IsAny<OrderDetail>())).Returns(Task.CompletedTask);
             unitOfWorkMock.Setup(u => u.UnitOfWorkRepositories.FoodRepository.UpdateStockFoodAsync(It.IsAny<int>(), It.IsAny<int>())).Returns(Task.CompletedTask);

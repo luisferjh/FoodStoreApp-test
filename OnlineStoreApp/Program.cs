@@ -30,17 +30,6 @@ namespace OnlineStoreApp
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer("name=DefaultConnection"));
 
-            //var optionBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            //var dbOptions = optionBuilder
-            //    .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("OnlineStoreApp.Repository.EFCore")).Options;
-
-            //var dbContext = new ApplicationDbContext(dbOptions);
-            //var pendingMigration = dbContext.Database.GetPendingMigrations() as IList<string> ?? dbContext.Database.GetPendingMigrations().ToList();
-            //if (pendingMigration.Any())
-            //{
-            //    dbContext.Database.Migrate();
-            //}
-
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
@@ -115,6 +104,7 @@ namespace OnlineStoreApp
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                app.ApplyMigrations();
             }
 
             app.UseHttpsRedirection();

@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineStoreApp", "OnlineStoreApp.csproj", "{8AD45AB5-830B-48E8-A20E-95EA2215643C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineStoreApp", "OnlineStoreApp\OnlineStoreApp.csproj", "{8AD45AB5-830B-48E8-A20E-95EA2215643C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EnterpriseBussinesRules", "EnterpriseBussinesRules", "{EE80B96C-6E46-48E3-BAAE-68E11746CBD8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineStoreApp.Entities", "..\OnlineStoreApp.Entities\OnlineStoreApp.Entities.csproj", "{13F02E64-DE08-446B-BAFA-563BA9DFC0DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineStoreApp.Entities", "OnlineStoreApp.Entities\OnlineStoreApp.Entities.csproj", "{13F02E64-DE08-446B-BAFA-563BA9DFC0DC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApplicationBussinesRules", "ApplicationBussinesRules", "{D48A4066-84FD-4A28-944F-C2B8BCF7AB4F}"
 EndProject
@@ -15,13 +15,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FrameworksAndDrivers", "Fra
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InterfaceAdapters", "InterfaceAdapters", "{05B7EFB6-7A01-4BF4-89A6-0D74947E0E55}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineStore.DTOs", "..\OnlineStore.DTOs\OnlineStore.DTOs.csproj", "{D1651FAD-FA03-4977-9C4B-1307E1FFCBCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineStore.DTOs", "OnlineStore.DTOs\OnlineStore.DTOs.csproj", "{D1651FAD-FA03-4977-9C4B-1307E1FFCBCD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineStoreApp.Repository.EFCore", "..\OnlineStoreApp.Repository.EFCore\OnlineStoreApp.Repository.EFCore.csproj", "{E65CC08A-9B76-4F4C-A468-EA4623B64996}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineStoreApp.Repository.EFCore", "OnlineStoreApp.Repository.EFCore\OnlineStoreApp.Repository.EFCore.csproj", "{E65CC08A-9B76-4F4C-A468-EA4623B64996}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineStoreApp.UseCases", "..\OnlineStoreApp.UseCases\OnlineStoreApp.UseCases.csproj", "{52FE3E9E-22B2-4A85-9961-9F150F008C03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineStoreApp.UseCases", "OnlineStoreApp.UseCases\OnlineStoreApp.UseCases.csproj", "{52FE3E9E-22B2-4A85-9961-9F150F008C03}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineStoreApp.Test", "..\OnlineStoreApp.Test\OnlineStoreApp.Test.csproj", "{908E4AF1-F223-4FE2-AEEE-9C8AF9C02952}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineStoreApp.Test", "OnlineStoreApp.Test\OnlineStoreApp.Test.csproj", "{908E4AF1-F223-4FE2-AEEE-9C8AF9C02952}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{3C1C2C5A-1966-4879-9CBE-662059AA9605}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{908E4AF1-F223-4FE2-AEEE-9C8AF9C02952}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{908E4AF1-F223-4FE2-AEEE-9C8AF9C02952}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{908E4AF1-F223-4FE2-AEEE-9C8AF9C02952}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C1C2C5A-1966-4879-9CBE-662059AA9605}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C1C2C5A-1966-4879-9CBE-662059AA9605}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C1C2C5A-1966-4879-9CBE-662059AA9605}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C1C2C5A-1966-4879-9CBE-662059AA9605}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

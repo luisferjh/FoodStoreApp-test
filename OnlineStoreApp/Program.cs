@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
+using OnlineStoreApp.Extensions;
 using OnlineStoreApp.Repository.EFCore.DataContext;
 using OnlineStoreApp.Repository.EFCore.Extensions;
 using OnlineStoreApp.UseCases.Extensions;
@@ -73,27 +74,21 @@ namespace OnlineStoreApp
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
+                    Type = SecuritySchemeType.Http,
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
-                    In = ParameterLocation.Header
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme."
                 });
 
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
                 {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference  = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        new string[]{ }
-                    }
+                    [new OpenApiSecuritySchemeReference("Bearer", document)] = []
                 });
             });
+
+            // Generates one AITool per OpenAPI operation of this API, ready to be exposed via an MCP server.
+            builder.Services.AddOpenApiAITools();
 
             var app = builder.Build();
 
@@ -105,6 +100,17 @@ namespace OnlineStoreApp
                 app.UseSwagger();
                 app.UseSwaggerUI();
                 app.ApplyMigrations();
+
+                // Diagnostics endpoint: lists the generated AITools plus any operation that could not be cleanly mapped.
+                app.MapGet("/ai-tools", async (IOpenApiAIToolsProvider toolsProvider, CancellationToken cancellationToken) =>
+                {
+                    var result = await toolsProvider.GetToolsAsync(cancellationToken);
+                    return Results.Ok(new
+                    {
+                        Tools = result.Tools.Select(t => new { t.Name, t.Description }),
+                        result.Issues
+                    });
+                }).WithName("GetAITools");
             }
 
             app.UseHttpsRedirection();
